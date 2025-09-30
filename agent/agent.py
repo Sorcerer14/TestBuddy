@@ -1,11 +1,42 @@
+from google.adk.agents import Agent, SequentialAgent
 from .flow_capture import run_test_flow
-from google.adk.agents import Agent
+from .prompt import greet_agent_instruction, greet_agent_description, start_caputre_agent_description, start_caputre_agent_instruction, test_manager_agent_description, generate_test_case_agent_description, generate_test_case_agent_instruction
+from .helper import get_system_details, save_json_file
 
-# test commit
-root_agent = Agent(
-    name="weather_time_agent",
+# Greet Agent - Greets and gathers context about the app and test scenario
+greet_agent = Agent(
+    name="greet_agent",
     model="gemini-2.0-flash",
-    description="Execute the run_test_flow function to start an automated browser test, which should launch the browser, begin recording the screen in real time, perform the defined test steps, capture all network requests and responses, and stop recording when the test flow completes, producing both a video file and a structured network log for analysis.",
-    instruction="Run the run_test_flow function to initiate an automated browser test. The instruction includes: launching the browser, starting real-time screen recording, executing the defined test steps, capturing all network requests and responses, and stopping recording automatically when the test flow finishes. Ensure that the function produces both a video file of the browser session and a structured network log file for further analysis.",
+    description=greet_agent_description,
+    instruction=greet_agent_instruction,
+    tools=[get_system_details],
+)
+
+# Start Capture Agent - Initiates the automated browser test and recording
+start_caputre_agent = Agent(
+    name="start_capture_agent",
+    model="gemini-2.0-pro",
+    description=start_caputre_agent_description,
+    instruction=start_caputre_agent_instruction,
     tools=[run_test_flow]
 )
+
+# Generate Test Case Agent - Creates comprehensive test cases based on the captured flow
+generate_test_case_agent = Agent(
+    name="generate_test_case_agent",
+    model="gemini-2.0-pro",
+    description=generate_test_case_agent_description,
+    instruction=generate_test_case_agent_instruction,
+    tools=[save_json_file]
+)
+
+# Test Manager Agent - Orchestrates the overall testing process
+test_manager_agent = SequentialAgent(
+    name="test_manager_agent",
+    model="gemini-2.0-pro",
+    sub_agents=[greet_agent, start_caputre_agent, generate_test_case_agent],
+    description=test_manager_agent_description,
+)
+
+# Root Agent - Entry point for the testing workflow
+root_agent = test_manager_agent
