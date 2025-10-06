@@ -205,3 +205,12 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# App Specific Ignores
+network_logs.json
+test_flow.mp4
+data/
+testBuddy.html
+network_logs.json
+Outputs/test_cases.json
+network_logs.json

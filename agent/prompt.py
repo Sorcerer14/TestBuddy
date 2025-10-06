@@ -42,3 +42,12 @@ generate_test_case_agent_instruction = (
 test_manager_agent_description = (
     """Manages the flow between greeting the user, starting the test capture, and generating test cases."""
 )
+
+redirect_to_testbuddyhtml_description = (
+    """Redirects to the testbuddy.html file to view the generated test cases."""
+)
+
+redirect_to_testbuddyhtml_instruction = (
+    """Run the open_html_in_browser function to open the testBuddy.html file in the default web browser.
+    This will display the generated test cases to the user."""
+)
